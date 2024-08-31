@@ -1,6 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			characters: [],
 			demo: [
 				{
 					title: "FIRST",
@@ -15,15 +16,34 @@ const getState = ({ getStore, getActions, setStore }) => {
 			]
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
+			// Use getActions to call a function within a function
 			exampleFunction: () => {
 				getActions().changeColor(0, "green");
 			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
+			getCharacters: ()=>{
+				const requestOptions = {
+					method: "GET",
+					redirect: "follow"
+				  };
+				  
+				  fetch("https://www.swapi.tech/api/people", requestOptions)
+					.then((response) => response.json()) // Convertir la respuesta a JSON
+					.then((result) => {
+					  // Verificar si result y result.results existen y contienen datos
+					  if (result && result.results) {
+						// Guardar los datos en la propiedad characters dentro del store
+						setStore({
+						  characters: result.results
+						});
+					  }
+					})
+					.catch((error) => console.error("Error:", error));
 			},
+			loadSomeData: () => {
+				// Aquí puedes cargar datos desde una API o realizar otras acciones de inicialización
+				
+			},
+			
 			changeColor: (index, color) => {
 				//get the store
 				const store = getStore();
